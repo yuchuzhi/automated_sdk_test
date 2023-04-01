@@ -1,0 +1,16 @@
+{
+  "name": "lpcxpresso55s28",
+
+  "debugger": {
+    "type": "pyocd",
+    "usbid": "022700001297f4cd00000000000000000000000097969905",
+    "gdbport": "64737"
+    },
+  "ports": [
+    {
+      "type": "main",
+      "port": "COM24",
+      "baudrate": "115200"
+    }
+  ]
+}

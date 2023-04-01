@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Resource>
+  <Local>
+    <sdk_root_path>C:/Mydoc/python-study/xiaopeng/sdk</sdk_root_path>
+    <scheduler>production</scheduler>
+    <local_ip></local_ip>
+    <local_mac></local_mac>
+    <machine_name></machine_name>
+    <build_token private="yes">Disabled</build_token>
+  </Local>
+  <Tools>
+    <gdb Path="" Version="" />
+    <jlink Path="" Version="" />
+  </Tools>
+  <IDE>
+    <mcux IsEnable="True" Path="C:/nxp/MCUXpressoIDE_11.7.0_9198" Version="11.7.0_9198" />
+    <armgcc IsEnable="True" Path="C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10" Version="10 2021.10" />
+  </IDE>
+</Resource>
