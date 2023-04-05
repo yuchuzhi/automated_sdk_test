@@ -99,6 +99,7 @@ def build(job_id, targets, apps, ides, sdk):
     ides = ides.split(",")
     workspace = generate_work_path(job_id)
     sdk_path = get_sdk_path(sdk)
+
     projects = get_projects(sdk_path, apps, ides=ides)
     output_files = []
     #挨个编译工程列表的所有工程
@@ -125,12 +126,12 @@ def build(job_id, targets, apps, ides, sdk):
                 if ret_value == 0:
                     build_output_file = builder.post_build(result)
                     output_files.append((build_output_file, prj.boardname, prj.name, target))
-                    logging.info('{:-^48}'.format(f" Test result =  {result.result.name} "))
+                    logging.info('{:-^48}'.format(f" Build result =  {result.result.name} "))
                 else:
                     #如果提交bug的标志是True，提交一个build 失败的bug到redmine.
                     if BUG_SUBMMIT:
                         redmine_create_issue(DEFAULT_REDMINE_PRJ_ID, DEFAULT_REDMINE_SUBJECT)
-                    logging.error('{:-^48}'.format(f" Test result =  {result.result.name} "))
+                    logging.error('{:-^48}'.format(f" Build result =  {result.result.name} "))
 
     total = len(results)
     counter_fail = 0
@@ -200,8 +201,8 @@ def get_sdk_path(sdkpath):
             sdk_local_path_download = download_package(sdk_path, f"{LOCAL_SCRIPT}/downloads")
             sdk_local_path.append(sdk_local_path_download)
 
-    extract(sdk_local_path, sdk_store_path)
-    return sdk_store_path
+    actual_sdk_path = extract(sdk_local_path, sdk_store_path)
+    return actual_sdk_path[0]
 
 
 def download_package(url, dstdir):
@@ -275,6 +276,7 @@ def download_package(url, dstdir):
     return downloadfile
 
 def extract(filepaths, dest_path):
+    store_folder_path = []
     for filepath in filepaths:
         filename = os.path.basename(filepath).split(".")[0]
         file_dest_path = f"{dest_path}/{filename}"
@@ -284,6 +286,9 @@ def extract(filepaths, dest_path):
             for file in zipFile.namelist():
                 zipFile.extract(file, file_dest_path)
             zipFile.close()
+            store_folder_path.append(file_dest_path)
+    return store_folder_path
+
 
 def redmine_create_issue(project_id, subject):
     """create a issue to redmine"""
