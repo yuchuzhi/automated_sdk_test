@@ -42,11 +42,25 @@ class CfgParser(object):
         usbid = board_config["debugger"]["usbid"]
         gdbport = board_config["debugger"]["gdbport"]
         ports = board_config["ports"]
-        board = board_obj(name=boardname, devicename=devicename, usbid=usbid, debugger_type=debugger_type, gdbport=gdbport)
+        gdb_path = self.get_tool_path("gdb")
+        board = board_obj(name=boardname,
+                          devicename=devicename,
+                          usbid=usbid,
+                          debugger_type=debugger_type,
+                          gdbport=gdbport,
+                          gdb_path=gdb_path)
         for serial_para in ports:
             board.set_serial(serial_para["port"], serial_para["baudrate"])
 
         return board
+
+    def get_specify_idepath(self, idename):
+        ide_path = self.xmlRoot.find(f"IDE/{idename}").attrib.get("Path")
+        return ide_path
+
+    def get_tool_path(self, tool_name):
+        tool_path = self.xmlRoot.find(f"Tools/{tool_name}").attrib.get("Path")
+        return tool_path
 
     def init_log(self, logfile):
         # config logging module
