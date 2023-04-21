@@ -1,6 +1,10 @@
 import io
 import logging
+import time
+
 from pexpect.spawnbase import SpawnBase
+from pexpect import TIMEOUT
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -141,7 +145,21 @@ class SerialSpawn(SpawnBase):
         Returns:
             [int]: return result value.
         """
-        index = self.expect(patterns, timeout=timeout)
-        assert index == (len(patterns) - 1), "Not all patterns are matched. Fail match pattern:{}.".format(patterns[index])
+        remain_time = timeout
+        for pattern in patterns:
+            start_time = time.time()
+            try:
+                index = self.expect([pattern], timeout=remain_time)
+                end_time = time.time()
+                per_used_time = end_time - start_time
+                remain_time -= per_used_time
+                print(f"=>Match pattern:{pattern}")
+                print(f"=>Matched content: {self.after}")
+                print(f"=>Used time: {per_used_time}, remain time: {remain_time}\r\n")
+
+                if self.match == TIMEOUT:
+                    assert False, f"Match timeout! Fail match pattern:{pattern}"
+            except EOFError:
+                assert False, f"Match fail! Fail match pattern:{pattern}, content:{self.before + self.after}"
 
         return 0
